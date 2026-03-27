@@ -1224,23 +1224,182 @@ def reset_chat():
 # <-- ADDED CLEAN LOGIN PAGE UI
 LOGIN_PAGE = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8"><title>Sasha | Auth</title>
+    <meta name="theme-color" content="#6366f1">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; background-color: #fafafa; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --login-bg:
+                radial-gradient(circle at top, rgba(99, 102, 241, 0.16) 0%, transparent 38%),
+                radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.12) 0%, transparent 28%),
+                radial-gradient(circle at 15% 85%, rgba(14, 165, 233, 0.12) 0%, transparent 24%),
+                linear-gradient(180deg, #fcfcff 0%, #f5f7ff 48%, #fafafa 100%);
+            --login-card-bg: rgba(255, 255, 255, 0.78);
+            --login-card-border: rgba(255, 255, 255, 0.75);
+            --login-card-shadow: 0 30px 90px -28px rgba(79, 70, 229, 0.28), 0 14px 40px -20px rgba(15, 23, 42, 0.22);
+            --login-text: #0f172a;
+            --login-muted: #64748b;
+            --login-input-bg: rgba(248, 250, 252, 0.92);
+            --login-input-border: rgba(148, 163, 184, 0.18);
+            --login-ring: rgba(99, 102, 241, 0.34);
+            --login-button-shadow: 0 18px 45px -18px rgba(79, 70, 229, 0.65);
+            --login-accent: #6366f1;
+            --login-accent-2: #8b5cf6;
+            --login-toggle-bg: rgba(255, 255, 255, 0.72);
+            --login-toggle-border: rgba(148, 163, 184, 0.18);
+        }
+        html.dark {
+            color-scheme: dark;
+            --login-bg:
+                radial-gradient(circle at top, rgba(99, 102, 241, 0.26) 0%, transparent 36%),
+                radial-gradient(circle at 85% 18%, rgba(236, 72, 153, 0.18) 0%, transparent 24%),
+                radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.18) 0%, transparent 22%),
+                linear-gradient(180deg, #060816 0%, #0b1020 48%, #020617 100%);
+            --login-card-bg: rgba(7, 12, 26, 0.72);
+            --login-card-border: rgba(148, 163, 184, 0.14);
+            --login-card-shadow: 0 36px 110px -34px rgba(15, 23, 42, 0.9), 0 24px 60px -26px rgba(79, 70, 229, 0.34);
+            --login-text: #f8fafc;
+            --login-muted: #94a3b8;
+            --login-input-bg: rgba(15, 23, 42, 0.78);
+            --login-input-border: rgba(148, 163, 184, 0.14);
+            --login-ring: rgba(129, 140, 248, 0.42);
+            --login-button-shadow: 0 22px 50px -18px rgba(99, 102, 241, 0.7);
+            --login-accent: #818cf8;
+            --login-accent-2: #a855f7;
+            --login-toggle-bg: rgba(15, 23, 42, 0.68);
+            --login-toggle-border: rgba(148, 163, 184, 0.14);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--login-bg);
+            color: var(--login-text);
+            transition: background 0.35s ease, color 0.35s ease;
+        }
+        .login-shell { position: relative; isolation: isolate; }
+        .login-shell::before,
+        .login-shell::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            pointer-events: none;
+            filter: blur(70px);
+            opacity: 0.8;
+            z-index: -1;
+        }
+        .login-shell::before {
+            width: 18rem; height: 18rem; top: 8%; left: 8%;
+            background: rgba(99, 102, 241, 0.18);
+        }
+        .login-shell::after {
+            width: 20rem; height: 20rem; right: 4%; bottom: 6%;
+            background: rgba(236, 72, 153, 0.12);
+        }
+        .login-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--login-card-bg);
+            border: 1px solid var(--login-card-border);
+            box-shadow: var(--login-card-shadow);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+        }
+        .login-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 35%, transparent 65%, rgba(255,255,255,0.08) 100%);
+            pointer-events: none;
+        }
+        .login-input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: var(--login-input-bg);
+            border: 1px solid var(--login-input-border);
+            border-radius: 1rem;
+            outline: none;
+            color: var(--login-text);
+            transition: all 0.22s ease;
+        }
+        .login-input::placeholder { color: var(--login-muted); }
+        .login-input:focus {
+            border-color: var(--login-ring);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--login-ring) 42%, transparent);
+            transform: translateY(-1px);
+        }
+        .theme-toggle {
+            background: var(--login-toggle-bg);
+            border: 1px solid var(--login-toggle-border);
+            color: var(--login-text);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 12px 34px -18px rgba(15, 23, 42, 0.35);
+        }
+        .login-button {
+            background: linear-gradient(135deg, var(--login-accent) 0%, var(--login-accent-2) 100%);
+            box-shadow: var(--login-button-shadow);
+        }
+        .login-kicker {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(168, 85, 247, 0.14) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.16);
+            color: var(--login-accent);
+        }
+        .login-subtitle { color: var(--login-muted); }
+    </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-sm bg-white p-8 rounded-[2rem] shadow-xl border border-gray-100">
-        <h1 class="text-2xl font-bold text-gray-900 text-center mb-6">Sasha Intelligence</h1>
-        <form method="POST" class="space-y-4">
-            <input type="text" name="username" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none" placeholder="Username" required>
-            <input type="password" name="password" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none" placeholder="Password" required>
-            {% if error %}<p class="text-red-500 text-xs text-center">{{ error }}</p>{% endif %}
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all">Login</button>
-        </form>
+    <div class="login-shell w-full flex items-center justify-center">
+        <button type="button" id="login-theme-toggle" class="theme-toggle fixed top-6 right-6 flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-[1.02]">
+            <span id="login-theme-icon">🌙</span>
+            <span id="login-theme-label">Dark mode</span>
+        </button>
+
+        <div class="w-full max-w-sm login-card p-8 rounded-[2rem]">
+            <div class="flex justify-center mb-5">
+                <div class="login-kicker px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-[0.28em]">Sasha Enterprise</div>
+            </div>
+            <h1 class="text-3xl font-extrabold text-center mb-2" style="color: var(--login-text);">Sasha Intelligence</h1>
+            <p class="login-subtitle text-sm text-center mb-6">Secure access to the enterprise intelligence layer.</p>
+            <form method="POST" class="space-y-4">
+                <input type="text" name="username" class="login-input" placeholder="Username" required>
+                <input type="password" name="password" class="login-input" placeholder="Password" required>
+                {% if error %}<p class="text-red-500 text-xs text-center">{{ error }}</p>{% endif %}
+                <button type="submit" class="login-button w-full text-white font-bold py-3 rounded-xl transition-all hover:translate-y-[-1px]">Login</button>
+            </form>
+        </div>
     </div>
+
+    <script>
+        (function() {
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('login-theme-toggle');
+            const icon = document.getElementById('login-theme-icon');
+            const label = document.getElementById('login-theme-label');
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+
+            function applyTheme(theme) {
+                html.classList.toggle('dark', theme === 'dark');
+                html.classList.toggle('light', theme !== 'dark');
+                icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+                label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+                if (metaTheme) metaTheme.setAttribute('content', theme === 'dark' ? '#0b1020' : '#6366f1');
+                localStorage.setItem('sasha-theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('sasha-theme');
+            const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            applyTheme(initialTheme);
+
+            themeToggle.addEventListener('click', () => {
+                applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
+            });
+        })();
+    </script>
 </body>
 </html>
 """
@@ -1248,9 +1407,10 @@ LOGIN_PAGE = """
 # ==============================================================================
 # UNTOUCHED 600-LINE HTML BLOCK EXACTLY AS YOU PROVIDED IT
 # ==============================================================================
+
 HTML_PAGE = """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <title>Sasha | Enterprise Intelligence</title>
@@ -1269,15 +1429,165 @@ HTML_PAGE = """
     <style>
         :root {
             --brand-color: #6366f1; /* Indigo */
+            --accent-color: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-cyan: #0ea5e9;
             --bg-color: #fafafa;
+            --bg-gradient:
+                radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            --body-text: #09090b;
+            --title-color: #111827;
+            --muted-text: #71717a;
+            --soft-text: #a1a1aa;
+            --card-bg: #ffffff;
+            --card-border: rgba(228, 228, 231, 0.8);
+            --card-shadow: 0 12px 40px -12px rgba(0,0,0,0.08);
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-bg-hover: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px -4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.02);
+            --glass-focus-shadow: 0 20px 60px -8px rgba(99, 102, 241, 0.15), 0 0 0 1.5px rgba(99, 102, 241, 0.4);
+            --table-head-bg: #f4f4f5;
+            --table-head-text: #71717a;
+            --table-cell-text: #27272a;
+            --table-row-border: #f4f4f5;
+            --table-head-border: #e4e4e7;
+            --table-row-hover: #fafafa;
+            --button-bg: rgba(255, 255, 255, 0.6);
+            --button-bg-hover: rgba(255, 255, 255, 0.9);
+            --button-border: rgba(0,0,0,0.05);
+            --button-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            --history-chip-bg: #f3f4f6;
+            --history-chip-border: #e5e7eb;
+            --history-chip-text: #9ca3af;
+            --insight-bg: rgba(238, 242, 255, 0.7);
+            --insight-border: rgba(199, 210, 254, 0.9);
+            --insight-title: #312e81;
+            --insight-text: #374151;
+            --footer-bg: rgba(249, 250, 251, 0.75);
+            --footer-border: #f3f4f6;
+            --details-bg: #f9fafb;
+            --details-hover: #f3f4f6;
+            --code-bg: #09090b;
+            --code-text: #a5b4fc;
+            --error-bg: rgba(254, 242, 242, 0.65);
+            --error-card-text: #b91c1c;
+            --scrollbar-thumb: #d4d4d8;
+            --loader-color: #6366f1;
+            --input-text: #111827;
+            --input-placeholder: #d1d5db;
+            --toolbar-text: #4b5563;
+            --surface-tint: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(236, 72, 153, 0.03) 100%);
+            --mesh-glow-1: rgba(99, 102, 241, 0.16);
+            --mesh-glow-2: rgba(236, 72, 153, 0.1);
+            --mesh-glow-3: rgba(14, 165, 233, 0.08);
+            --theme-chip-bg: rgba(255, 255, 255, 0.72);
+            --theme-chip-border: rgba(0,0,0,0.05);
+            --theme-chip-shadow: 0 16px 36px -18px rgba(15, 23, 42, 0.2);
+            --chart-grid: #f4f4f5;
+            --chart-text: #71717a;
+            --chart-line: #6366f1;
+            --chart-fill: rgba(99, 102, 241, 0.1);
+            color-scheme: light;
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: #09090b; overflow-x: hidden; scroll-behavior: smooth; }
+
+        html.dark {
+            --brand-color: #818cf8;
+            --accent-color: #a78bfa;
+            --accent-pink: #f472b6;
+            --accent-cyan: #38bdf8;
+            --bg-color: #020617;
+            --bg-gradient:
+                radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.28) 0%, transparent 40%),
+                radial-gradient(circle at 80% 75%, rgba(236, 72, 153, 0.16) 0%, transparent 35%),
+                radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.14) 0%, transparent 28%);
+            --body-text: #f8fafc;
+            --title-color: #f8fafc;
+            --muted-text: #cbd5e1;
+            --soft-text: #94a3b8;
+            --card-bg: rgba(7, 12, 26, 0.88);
+            --card-border: rgba(148, 163, 184, 0.12);
+            --card-shadow: 0 24px 70px -28px rgba(0,0,0,0.85), 0 12px 34px -18px rgba(79, 70, 229, 0.3);
+            --glass-bg: rgba(7, 12, 26, 0.68);
+            --glass-bg-hover: rgba(10, 16, 31, 0.86);
+            --glass-border: rgba(148, 163, 184, 0.12);
+            --glass-shadow: 0 16px 50px -22px rgba(0,0,0,0.75), 0 0 0 1px rgba(148, 163, 184, 0.08);
+            --glass-focus-shadow: 0 24px 70px -18px rgba(99, 102, 241, 0.28), 0 0 0 1.5px rgba(129, 140, 248, 0.45);
+            --table-head-bg: rgba(15, 23, 42, 0.94);
+            --table-head-text: #cbd5e1;
+            --table-cell-text: #f8fafc;
+            --table-row-border: rgba(148, 163, 184, 0.08);
+            --table-head-border: rgba(148, 163, 184, 0.12);
+            --table-row-hover: rgba(30, 41, 59, 0.7);
+            --button-bg: rgba(15, 23, 42, 0.72);
+            --button-bg-hover: rgba(15, 23, 42, 0.94);
+            --button-border: rgba(148, 163, 184, 0.12);
+            --button-shadow: 0 10px 28px -16px rgba(0,0,0,0.65);
+            --history-chip-bg: rgba(15, 23, 42, 0.88);
+            --history-chip-border: rgba(148, 163, 184, 0.14);
+            --history-chip-text: #94a3b8;
+            --insight-bg: rgba(30, 41, 59, 0.66);
+            --insight-border: rgba(99, 102, 241, 0.18);
+            --insight-title: #c7d2fe;
+            --insight-text: #e2e8f0;
+            --footer-bg: rgba(15, 23, 42, 0.68);
+            --footer-border: rgba(148, 163, 184, 0.08);
+            --details-bg: rgba(7, 12, 26, 0.95);
+            --details-hover: rgba(15, 23, 42, 0.95);
+            --code-bg: #020617;
+            --code-text: #c7d2fe;
+            --error-bg: rgba(69, 10, 10, 0.5);
+            --error-card-text: #fecaca;
+            --scrollbar-thumb: #334155;
+            --loader-color: #818cf8;
+            --input-text: #f8fafc;
+            --input-placeholder: #64748b;
+            --toolbar-text: #e2e8f0;
+            --surface-tint: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(236, 72, 153, 0.07) 100%);
+            --mesh-glow-1: rgba(99, 102, 241, 0.28);
+            --mesh-glow-2: rgba(236, 72, 153, 0.16);
+            --mesh-glow-3: rgba(14, 165, 233, 0.14);
+            --theme-chip-bg: rgba(15, 23, 42, 0.74);
+            --theme-chip-border: rgba(148, 163, 184, 0.12);
+            --theme-chip-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.65);
+            --chart-grid: rgba(148, 163, 184, 0.12);
+            --chart-text: #cbd5e1;
+            --chart-line: #818cf8;
+            --chart-fill: rgba(129, 140, 248, 0.16);
+            color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--body-text); overflow-x: hidden; scroll-behavior: smooth; transition: background-color 0.35s ease, color 0.35s ease; }
 
         .ambient-mesh {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-            background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
-                        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
+            background: var(--bg-gradient);
+            transition: background 0.45s ease;
         }
+
+        .ambient-orbit {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .ambient-orbit::before,
+        .ambient-orbit::after {
+            content: "";
+            position: absolute; border-radius: 9999px; filter: blur(90px); opacity: 0.9;
+        }
+        .ambient-orbit::before {
+            width: 22rem; height: 22rem; top: 10%; left: -4%;
+            background: var(--mesh-glow-1);
+            animation: driftOne 14s ease-in-out infinite alternate;
+        }
+        .ambient-orbit::after {
+            width: 24rem; height: 24rem; right: -6%; bottom: 4%;
+            background: linear-gradient(135deg, var(--mesh-glow-2), var(--mesh-glow-3));
+            animation: driftTwo 16s ease-in-out infinite alternate;
+        }
+
+        @keyframes driftOne { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(60px, 30px, 0) scale(1.08); } }
+        @keyframes driftTwo { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-50px, -25px, 0) scale(1.06); } }
 
         .sasha-core {
             width: 32px; height: 32px; border-radius: 50%;
@@ -1286,71 +1596,114 @@ HTML_PAGE = """
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            box-shadow: 0 0 15px var(--brand-color), 0 0 30px var(--brand-color);
+            box-shadow: 0 0 15px var(--brand-color), 0 0 30px color-mix(in srgb, var(--brand-color) 80%, transparent);
             animation: breathe 3s infinite ease-in-out;
+            transition: box-shadow 0.35s ease;
         }
-        .sasha-core.thinking { animation: pulse-fast 0.8s infinite alternate; box-shadow: 0 0 20px #ec4899; }
+        .sasha-core.thinking { animation: pulse-fast 0.8s infinite alternate; box-shadow: 0 0 20px var(--accent-pink), 0 0 42px color-mix(in srgb, var(--accent-pink) 75%, transparent); }
 
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
         @keyframes pulse-fast { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.3); opacity: 1; } }
 
         .spotlight-glass {
-            background: rgba(255, 255, 255, 0.75);
+            background: var(--glass-bg);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px -4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.02);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
             border-radius: 2rem;
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
         }
+        .spotlight-glass::before {
+            content: "";
+            position: absolute; inset: 0;
+            background: var(--surface-tint);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+        .spotlight-glass > * { position: relative; z-index: 1; }
         .spotlight-glass:focus-within {
-            box-shadow: 0 20px 60px -8px rgba(99, 102, 241, 0.15), 0 0 0 1.5px rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px); background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--glass-focus-shadow);
+            transform: translateY(-2px); background: var(--glass-bg-hover);
         }
 
         .executive-card {
-            background: #FFFFFF; border-radius: 24px;
-            box-shadow: 0 12px 40px -12px rgba(0,0,0,0.08);
-            border: 1px solid rgba(228, 228, 231, 0.8);
+            background: var(--card-bg); border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--card-border);
             animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             overflow: hidden;
+            position: relative;
+            transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease, border-color 0.28s ease;
         }
+        .executive-card::before {
+            content: "";
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 35%, transparent 70%, rgba(129,140,248,0.08) 100%);
+            pointer-events: none;
+        }
+        .executive-card:hover { transform: translateY(-2px); box-shadow: 0 24px 70px -24px rgba(99, 102, 241, 0.18), var(--card-shadow); }
 
         .sasha-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .sasha-table thead { background: #f4f4f5; }
-        .sasha-table th { color: #71717a; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 14px 24px; border-bottom: 1px solid #e4e4e7; white-space: nowrap; }
-        .sasha-table td { padding: 16px 24px; color: #27272a; font-size: 0.875rem; border-bottom: 1px solid #f4f4f5; font-variant-numeric: tabular-nums; white-space: nowrap; }
-        .sasha-table tr:hover td { background-color: #fafafa; }
+        .sasha-table thead { background: var(--table-head-bg); }
+        .sasha-table th { color: var(--table-head-text); font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 14px 24px; border-bottom: 1px solid var(--table-head-border); white-space: nowrap; }
+        .sasha-table td { padding: 16px 24px; color: var(--table-cell-text); font-size: 0.875rem; border-bottom: 1px solid var(--table-row-border); font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .sasha-table tr:hover td { background-color: var(--table-row-hover); }
         .sasha-table tr:last-child td { border-bottom: none; }
 
-        .btn-glass { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: all 0.2s; }
-        .btn-glass:hover { background: rgba(255, 255, 255, 0.9); transform: translateY(-1px); }
+        .btn-glass { background: var(--button-bg); color: var(--toolbar-text); backdrop-filter: blur(12px); border: 1px solid var(--button-border); box-shadow: var(--button-shadow); transition: all 0.2s; }
+        .btn-glass:hover { background: var(--button-bg-hover); transform: translateY(-1px); }
+
+        .theme-toggle-btn {
+            background: var(--theme-chip-bg);
+            border: 1px solid var(--theme-chip-border);
+            box-shadow: var(--theme-chip-shadow);
+            color: var(--toolbar-text);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .theme-toggle-btn:hover { transform: translateY(-1px) scale(1.01); }
+
+        .aurora-line {
+            position: absolute; inset: 0 auto auto 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--brand-color) 65%, transparent) 18%, color-mix(in srgb, var(--accent-pink) 55%, transparent) 48%, color-mix(in srgb, var(--accent-cyan) 55%, transparent) 78%, transparent 100%);
+            opacity: 0.85;
+        }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center pt-28 pb-40 px-6 relative">
 
     <div class="ambient-mesh"></div>
+    <div class="ambient-orbit"></div>
 
     <div class="fixed top-6 left-8 z-50 flex items-center space-x-3">
         <div id="sasha-orb" class="sasha-core"></div>
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Sasha</h1>
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight" style="color: var(--title-color);">Sasha</h1>
+            <p class="text-[10px] font-bold uppercase tracking-[0.32em] mt-0.5" style="color: var(--soft-text);">Enterprise Intelligence</p>
+        </div>
     </div>
 
     <div class="fixed top-6 right-8 z-50 flex space-x-3">
-        <button onclick="resetThread()" class="btn-glass flex items-center px-5 py-2.5 rounded-full text-sm font-semibold text-gray-700">
-            <i data-lucide="refresh-cw" class="w-4 h-4 mr-2 text-indigo-500"></i>
+        <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle-btn flex items-center px-5 py-2.5 rounded-full text-sm font-semibold">
+            <i id="theme-toggle-icon" data-lucide="moon" class="w-4 h-4 mr-2" style="color: var(--brand-color);"></i>
+            <span id="theme-toggle-text" class="hidden sm:inline">Dark Mode</span>
+        </button>
+        <button onclick="resetThread()" class="btn-glass flex items-center px-5 py-2.5 rounded-full text-sm font-semibold">
+            <i data-lucide="refresh-cw" class="w-4 h-4 mr-2" style="color: var(--brand-color);"></i>
             <span class="hidden sm:inline">New Thread</span>
         </button>
-        <button onclick="toggleHistory()" class="btn-glass flex items-center px-5 py-2.5 rounded-full text-sm font-semibold text-gray-700">
-            <i data-lucide="layers" class="w-4 h-4 mr-2 text-indigo-500"></i>
+        <button onclick="toggleHistory()" class="btn-glass flex items-center px-5 py-2.5 rounded-full text-sm font-semibold">
+            <i data-lucide="layers" class="w-4 h-4 mr-2" style="color: var(--brand-color);"></i>
             <span id="history-btn-text" class="hidden sm:inline">Archive</span>
         </button>
-        <a href="/logout" class="btn-glass flex items-center px-5 py-2.5 rounded-full text-sm font-semibold text-gray-700">
+        <a href="/logout" class="btn-glass flex items-center px-5 py-2.5 rounded-full text-sm font-semibold">
             <i data-lucide="log-out" class="w-4 h-4 mr-2 text-red-400"></i>
             <span class="hidden sm:inline">Log Out</span>
         </a>
@@ -1358,7 +1711,7 @@ HTML_PAGE = """
 
     <div class="w-full max-w-5xl z-10 w-full mt-4">
         <div id="history-container" class="hidden space-y-10 relative mb-10">
-            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-100 text-gray-400 text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full border border-gray-200">Conversation Archive</div>
+            <div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full border" style="background: var(--history-chip-bg); color: var(--history-chip-text); border-color: var(--history-chip-border);">Conversation Archive</div>
         </div>
 
         <div id="latest-result"></div>
@@ -1366,14 +1719,61 @@ HTML_PAGE = """
 
     <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-3xl z-50 px-4">
         <div class="spotlight-glass flex items-center px-6 py-3 relative overflow-hidden shadow-xl">
-            <div id="loader-bar" class="absolute bottom-0 left-0 h-0.5 bg-indigo-500 w-0 transition-all duration-300"></div>
-            <i data-lucide="search" class="w-6 h-6 text-gray-400 mr-4 shrink-0"></i>
-            <input type="text" id="question" class="w-full bg-transparent text-xl py-4 outline-none text-gray-900 placeholder-gray-300 font-medium" placeholder="Ask Sasha a question...">
-            <div id="loading-text" class="hidden text-xs font-bold text-indigo-500 uppercase tracking-widest ml-4 shrink-0 animate-pulse">Calculating</div>
+            <div class="aurora-line"></div>
+            <div id="loader-bar" class="absolute bottom-0 left-0 h-0.5 w-0 transition-all duration-300" style="background: var(--loader-color);"></div>
+            <i data-lucide="search" class="w-6 h-6 mr-4 shrink-0" style="color: var(--soft-text);"></i>
+            <input type="text" id="question" class="w-full bg-transparent text-xl py-4 outline-none font-medium" style="color: var(--input-text);" placeholder="Ask Sasha a question...">
+            <div id="loading-text" class="hidden text-xs font-bold uppercase tracking-widest ml-4 shrink-0 animate-pulse" style="color: var(--brand-color);">Calculating</div>
         </div>
     </div>
 
     <script>
+        const htmlEl = document.documentElement;
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+        function getThemePalette() {
+            const styles = getComputedStyle(document.documentElement);
+            const brand = styles.getPropertyValue('--chart-line').trim() || '#6366f1';
+            const fill = styles.getPropertyValue('--chart-fill').trim() || 'rgba(99, 102, 241, 0.1)';
+            const text = styles.getPropertyValue('--chart-text').trim() || '#71717a';
+            const grid = styles.getPropertyValue('--chart-grid').trim() || '#f4f4f5';
+            const border = htmlEl.classList.contains('dark') ? '#0f172a' : '#ffffff';
+            return {
+                brand,
+                fill,
+                text,
+                grid,
+                doughnut: [brand, '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#0ea5e9'],
+                border
+            };
+        }
+
+        function applyTheme(theme) {
+            const isDark = theme === 'dark';
+            htmlEl.classList.toggle('dark', isDark);
+            htmlEl.classList.toggle('light', !isDark);
+            localStorage.setItem('sasha-theme', theme);
+
+            const toggleText = document.getElementById('theme-toggle-text');
+            const toggleIcon = document.getElementById('theme-toggle-icon');
+            if (toggleText) toggleText.innerText = isDark ? 'Light Mode' : 'Dark Mode';
+            if (toggleIcon) {
+                toggleIcon.setAttribute('data-lucide', isDark ? 'sun-medium' : 'moon');
+            }
+            if (themeMeta) themeMeta.setAttribute('content', isDark ? '#020617' : '#6366f1');
+
+            Chart.defaults.color = getThemePalette().text;
+            lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            applyTheme(htmlEl.classList.contains('dark') ? 'light' : 'dark');
+        }
+
+        const savedTheme = localStorage.getItem('sasha-theme');
+        const preferredTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(preferredTheme);
+
         // PWA ADDITION: Register the Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
@@ -1389,14 +1789,15 @@ HTML_PAGE = """
         let chartCounter = 0;
 
         Chart.defaults.font.family = "'Inter', sans-serif";
-        Chart.defaults.color = '#71717a';
+        Chart.defaults.color = getThemePalette().text;
 
         document.getElementById("question").addEventListener("keypress", (e) => { if (e.key === "Enter") ask(); });
+        document.getElementById("question").style.setProperty('caret-color', getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim());
 
         async function resetThread() {
             await fetch('/reset', { method: 'POST' });
             document.getElementById('latest-result').innerHTML = '';
-            document.getElementById('history-container').innerHTML = `<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-100 text-gray-400 text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full border border-gray-200">Conversation Archive</div>`;
+            document.getElementById('history-container').innerHTML = `<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full border" style="background: var(--history-chip-bg); color: var(--history-chip-text); border-color: var(--history-chip-border);">Conversation Archive</div>`;
             document.getElementById('question').value = '';
         }
 
@@ -1440,7 +1841,9 @@ HTML_PAGE = """
             if (latestContainer.children.length > 0) {
                 const pastResult = latestContainer.firstElementChild;
                 pastResult.classList.remove('executive-card');
-                pastResult.classList.add('bg-white', 'rounded-3xl', 'border', 'border-gray-100', 'opacity-60', 'hover:opacity-100', 'transition-all', 'duration-300', 'scale-[0.98]');
+                pastResult.classList.add('rounded-3xl', 'border', 'opacity-60', 'hover:opacity-100', 'transition-all', 'duration-300', 'scale-[0.98]');
+                pastResult.style.background = 'var(--card-bg)';
+                pastResult.style.borderColor = 'var(--card-border)';
                 historyContainer.appendChild(pastResult); // Append to bottom of history
                 historyContainer.classList.remove('hidden'); // Auto show history so flow is natural
                 document.getElementById('history-btn-text').innerText = 'Hide Archive';
@@ -1453,19 +1856,19 @@ HTML_PAGE = """
 
             // --- NEW FIX: Instantly drop a Loading Card with the user's Question ---
             latestContainer.innerHTML = `
-                <div class="executive-card p-10 mb-10 border-indigo-100 border-2" id="loading-card">
+                <div class="executive-card p-10 mb-10 border-2" id="loading-card" style="border-color: color-mix(in srgb, var(--brand-color) 18%, var(--card-border));">
                     <div class="flex items-center space-x-4 mb-6">
                         <div class="sasha-core thinking shrink-0"></div>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest" style="background: color-mix(in srgb, var(--brand-color) 10%, transparent); color: var(--brand-color); border: 1px solid color-mix(in srgb, var(--brand-color) 12%, transparent);">
                             <i data-lucide="sparkles" class="w-3 h-3 mr-1.5"></i> Q: ${q}
                         </span>
                     </div>
                     <div class="animate-pulse flex space-x-4 mt-6">
                         <div class="flex-1 space-y-4 py-1">
-                            <div class="h-4 bg-gray-100 rounded w-3/4"></div>
+                            <div class="h-4 rounded w-3/4" style="background: color-mix(in srgb, var(--brand-color) 10%, var(--table-row-hover));"></div>
                             <div class="space-y-3">
-                                <div class="h-4 bg-gray-50 rounded"></div>
-                                <div class="h-4 bg-gray-50 rounded w-5/6"></div>
+                                <div class="h-4 rounded" style="background: color-mix(in srgb, var(--brand-color) 6%, var(--table-row-hover));"></div>
+                                <div class="h-4 rounded w-5/6" style="background: color-mix(in srgb, var(--brand-color) 6%, var(--table-row-hover));"></div>
                             </div>
                         </div>
                     </div>
@@ -1503,75 +1906,75 @@ HTML_PAGE = """
 
                 if (data.error) {
                     wrapper.innerHTML = `
-                        <div class="p-8 flex items-start space-x-4 bg-red-50/50">
+                        <div class="p-8 flex items-start space-x-4" style="background: var(--error-bg);">
                             <i data-lucide="shield-alert" class="w-6 h-6 text-red-500 shrink-0"></i>
                             <div>
-                                <h3 class="font-bold text-gray-900 mb-1">Execution Halted</h3>
-                                <p class="text-red-700 font-medium text-sm leading-relaxed">${data.error}</p>
+                                <h3 class="font-bold mb-1" style="color: var(--title-color);">Execution Halted</h3>
+                                <p class="font-medium text-sm leading-relaxed" style="color: var(--error-card-text);">${data.error}</p>
                             </div>
                         </div>
                     `;
                 } else {
                     let badgeHtml = '';
-                    if (data.health_badge === 'Red') badgeHtml = `<span class="px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold uppercase tracking-widest flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-red-500 mr-2"></div> High Risk</span>`;
-                    else if (data.health_badge === 'Yellow') badgeHtml = `<span class="px-3 py-1 rounded-full bg-yellow-50 border border-yellow-200 text-yellow-700 text-[10px] font-bold uppercase tracking-widest flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-2"></div> Attention</span>`;
-                    else if (data.health_badge === 'Green') badgeHtml = `<span class="px-3 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold uppercase tracking-widest flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2"></div> Healthy</span>`;
+                    if (data.health_badge === 'Red') badgeHtml = `<span class="px-3 py-1 rounded-full bg-red-50/90 border border-red-200 text-red-700 text-[10px] font-bold uppercase tracking-widest flex items-center dark:bg-red-950/50 dark:border-red-900 dark:text-red-200"><div class="w-1.5 h-1.5 rounded-full bg-red-500 mr-2"></div> High Risk</span>`;
+                    else if (data.health_badge === 'Yellow') badgeHtml = `<span class="px-3 py-1 rounded-full bg-yellow-50/90 border border-yellow-200 text-yellow-700 text-[10px] font-bold uppercase tracking-widest flex items-center dark:bg-yellow-950/40 dark:border-yellow-900 dark:text-yellow-200"><div class="w-1.5 h-1.5 rounded-full bg-yellow-500 mr-2"></div> Attention</span>`;
+                    else if (data.health_badge === 'Green') badgeHtml = `<span class="px-3 py-1 rounded-full bg-green-50/90 border border-green-200 text-green-700 text-[10px] font-bold uppercase tracking-widest flex items-center dark:bg-green-950/40 dark:border-green-900 dark:text-green-200"><div class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2"></div> Healthy</span>`;
 
                     let insightHtml = '';
                     if (data.sasha_insight) {
                         insightHtml = `
-                        <div class="mb-8 bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6">
+                        <div class="mb-8 rounded-2xl p-6" style="background: var(--insight-bg); border: 1px solid var(--insight-border);">
                             <div class="flex items-center mb-3">
-                                <i data-lucide="brain-circuit" class="w-4 h-4 text-indigo-500 mr-2"></i>
-                                <h4 class="text-xs font-bold text-indigo-900 uppercase tracking-widest">Sasha's Insight</h4>
+                                <i data-lucide="brain-circuit" class="w-4 h-4 mr-2" style="color: var(--brand-color);"></i>
+                                <h4 class="text-xs font-bold uppercase tracking-widest" style="color: var(--insight-title);">Sasha's Insight</h4>
                             </div>
-                            <p class="text-sm text-gray-700 leading-relaxed">${data.sasha_insight}</p>
+                            <p class="text-sm leading-relaxed" style="color: var(--insight-text);">${data.sasha_insight}</p>
                         </div>`;
                     }
 
                     let suggestionsHtml = '';
                     if (data.suggestions && data.suggestions.length > 0) {
-                        const btns = data.suggestions.map(s => `<button onclick="document.getElementById('question').value='${s}'; ask();" class="text-xs bg-gray-50 hover:bg-indigo-50 border border-gray-200 text-gray-600 hover:text-indigo-700 px-4 py-2 rounded-full transition-colors">${s}</button>`).join('');
-                        suggestionsHtml = `<div class="p-6 bg-white border-t border-gray-100 flex flex-wrap gap-2 items-center"><span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mr-2">Suggested Next Steps:</span>${btns}</div>`;
+                        const btns = data.suggestions.map(s => `<button onclick="document.getElementById('question').value='${s}'; ask();" class="text-xs px-4 py-2 rounded-full transition-colors border" style="background: var(--button-bg); border-color: var(--button-border); color: var(--toolbar-text);">${s}</button>`).join('');
+                        suggestionsHtml = `<div class="p-6 border-t flex flex-wrap gap-2 items-center" style="background: var(--card-bg); border-color: var(--footer-border);"><span class="text-[10px] font-bold uppercase tracking-widest mr-2" style="color: var(--soft-text);">Suggested Next Steps:</span>${btns}</div>`;
                     }
 
                     wrapper.innerHTML = `
                         <div class="p-10 pb-8">
                             <div class="flex justify-between items-start mb-6">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest" style="background: color-mix(in srgb, var(--brand-color) 10%, transparent); color: var(--brand-color); border: 1px solid color-mix(in srgb, var(--brand-color) 12%, transparent);">
                                     <i data-lucide="sparkles" class="w-3 h-3 mr-1.5"></i> Q: ${q}
                                 </span>
                                 ${badgeHtml}
                             </div>
-                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight tracking-tight mb-8">${data.headline}</h2>
+                            <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-8" style="color: var(--title-color);">${data.headline}</h2>
 
                             ${insightHtml}
 
                             ${data.chart_intent !== 'none' && data.raw_data && data.raw_data.length > 0 ? `<div class="h-[350px] w-full mb-10"><canvas id="${uniqueChartId}"></canvas></div>` : ''}
                         </div>
 
-                        <div id="table-${chartCounter}" class="overflow-x-auto border-y border-gray-100 bg-white">
+                        <div id="table-${chartCounter}" class="overflow-x-auto border-y" style="border-color: var(--footer-border); background: var(--card-bg);">
                             ${data.html_table}
                         </div>
 
-                        <div class="px-10 py-4 bg-gray-50/50 flex space-x-3">
-                            <button onclick="exportExcel('table-${chartCounter}')" class="flex items-center px-4 py-2 bg-white hover:bg-green-50 text-green-700 text-xs font-bold rounded-lg transition-colors border border-green-200 shadow-sm">
+                        <div class="px-10 py-4 flex space-x-3" style="background: var(--footer-bg);">
+                            <button onclick="exportExcel('table-${chartCounter}')" class="flex items-center px-4 py-2 text-xs font-bold rounded-lg transition-colors border shadow-sm bg-white hover:bg-green-50 text-green-700 border-green-200 dark:bg-slate-900 dark:hover:bg-green-950/40 dark:text-green-300 dark:border-green-900">
                                 <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2"></i> Download Excel
                             </button>
-                            <button onclick="exportPDF('card-${chartCounter}')" class="flex items-center px-4 py-2 bg-white hover:bg-red-50 text-red-700 text-xs font-bold rounded-lg transition-colors border border-red-200 shadow-sm">
+                            <button onclick="exportPDF('card-${chartCounter}')" class="flex items-center px-4 py-2 text-xs font-bold rounded-lg transition-colors border shadow-sm bg-white hover:bg-red-50 text-red-700 border-red-200 dark:bg-slate-900 dark:hover:bg-red-950/40 dark:text-red-300 dark:border-red-900">
                                 <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> Export to PDF
                             </button>
                         </div>
 
                         ${suggestionsHtml}
 
-                        <details class="group bg-gray-50 border-t border-gray-100">
-                            <summary class="cursor-pointer px-10 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest list-none flex items-center hover:bg-gray-100 transition-colors">
+                        <details class="group border-t" style="background: var(--details-bg); border-color: var(--footer-border);">
+                            <summary class="cursor-pointer px-10 py-4 text-xs font-semibold uppercase tracking-widest list-none flex items-center transition-colors" style="color: var(--soft-text);">
                                 <i data-lucide="terminal" class="w-4 h-4 mr-2"></i> View Agent Logic
                                 <i data-lucide="chevron-down" class="w-4 h-4 ml-auto transition-transform group-open:rotate-180"></i>
                             </summary>
-                            <div class="px-10 py-6 bg-[#09090b] overflow-x-auto">
-                                <code class="text-[11px] text-[#a5b4fc] font-mono whitespace-pre-wrap leading-relaxed">${data.python_code}</code>
+                            <div class="px-10 py-6 overflow-x-auto" style="background: var(--code-bg);">
+                                <code class="text-[11px] font-mono whitespace-pre-wrap leading-relaxed" style="color: var(--code-text);">${data.python_code}</code>
                             </div>
                         </details>
                     `;
@@ -1593,9 +1996,9 @@ HTML_PAGE = """
                         .filter(r => r.label && Number.isFinite(r.value));
 
                     if (chartRows.length >= 2) {
+                        const palette = getThemePalette();
                         const ctx = document.getElementById(uniqueChartId).getContext('2d');
                         const isDoughnut = data.chart_intent === 'doughnut';
-                        const chartColors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#0ea5e9'];
 
                         new Chart(ctx, {
                             type: data.chart_intent,
@@ -1603,10 +2006,10 @@ HTML_PAGE = """
                                 labels: chartRows.map(r => r.label),
                                 datasets: [{
                                     data: chartRows.map(r => r.value),
-                                    backgroundColor: isDoughnut ? chartColors : 'rgba(99, 102, 241, 0.1)',
-                                    borderColor: isDoughnut ? '#ffffff' : '#6366f1',
+                                    backgroundColor: isDoughnut ? palette.doughnut : palette.fill,
+                                    borderColor: isDoughnut ? palette.border : palette.brand,
                                     borderWidth: 2,
-                                    borderRadius: isDoughnut ? 0 : 4,
+                                    borderRadius: isDoughnut ? 0 : 8,
                                     fill: data.chart_intent === 'line',
                                     tension: 0.4
                                 }]
@@ -1614,10 +2017,26 @@ HTML_PAGE = """
                             options: {
                                 responsive: true,
                                 maintainAspectRatio: false,
-                                plugins: { legend: { display: isDoughnut, position: 'right' } },
+                                plugins: {
+                                    legend: {
+                                        display: isDoughnut,
+                                        position: 'right',
+                                        labels: { color: palette.text, boxWidth: 14, boxHeight: 14, usePointStyle: true, pointStyle: 'circle' }
+                                    }
+                                },
                                 scales: {
-                                    y: { display: !isDoughnut, border: { display: false }, grid: { color: '#f4f4f5' } },
-                                    x: { display: !isDoughnut, border: { display: false }, grid: { display: false } }
+                                    y: {
+                                        display: !isDoughnut,
+                                        border: { display: false },
+                                        grid: { color: palette.grid },
+                                        ticks: { color: palette.text }
+                                    },
+                                    x: {
+                                        display: !isDoughnut,
+                                        border: { display: false },
+                                        grid: { display: false },
+                                        ticks: { color: palette.text }
+                                    }
                                 }
                             }
                         });
@@ -1634,7 +2053,7 @@ HTML_PAGE = """
                 clearInterval(progressInterval);
                 loaderText.classList.add('hidden');
                 loaderBar.style.width = '0%';
-                latestContainer.innerHTML = `<div class="executive-card p-8 text-center text-red-500 font-medium">System failure: Sasha offline.</div>`;
+                latestContainer.innerHTML = `<div class="executive-card p-8 text-center font-medium" style="color: var(--error-card-text); background: var(--card-bg);">System failure: Sasha offline.</div>`;
             }
         }
     </script>
